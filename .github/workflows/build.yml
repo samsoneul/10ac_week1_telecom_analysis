@@ -1,43 +1,37 @@
-
 name: Build and setup
 
-
 on:
-    push:
-        branches:
-            - main
-            - Task-2
-    pull_request:
-        branches:
-            - main
-            - Task-2
+  push:
+    branches:
+      - main
+      - Task-2
+  pull_request:
+    branches:
+      - main
+      - Task-2
+
 jobs:
-    build:
-        runs-on: windows-latest
+  build:
+    runs-on: windows-latest
 
-        steps:
-            - name: Checkout code 
-              uses: actions/checkout@v2
+    steps:
+      - name: Checkout code 
+        uses: actions/checkout@v2
 
-            - name: Set up python 
-              uses: actions/setup-python@v2
-              with:
-                python-version: '3.8'
-                
-            - name: Install dependecies
-              run: |
-               python -m pip install --upgrade pip
-               pip install -r requirements.txt
-               - name: Cache dependencies
-               uses: actions/cache@v2
-               with:
-                 path: C:\Users\runneradmin\.cache\pip
-                 key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-                 restore-keys: |
-                   ${{ runner.os }}-pip-
-            
-            
-    
+      - name: Set up python 
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-            
-            
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: C:\Users\runneradmin\.cache\pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
