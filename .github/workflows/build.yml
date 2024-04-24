@@ -1,4 +1,4 @@
-name: Build and setup
+name: Build and tests
 
 on:
   push:
@@ -27,6 +27,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+
+      - name: Integration test for data loading
+        run: pytest tests\
+
 
       - name: Cache dependencies
         uses: actions/cache@v2
