@@ -7,8 +7,11 @@ import os
 def preproccess_numerical_data(df):
     # Fill missing values with mean for numerical columns
     numerical_cols = df.select_dtypes(include=['number']).columns
-    df["numerical_cols"] = df[numerical_cols].fillna(df[numerical_cols].mean())
+    for col in numerical_cols:
+        df[col] = df[col].fillna(df[col].mean())
     return df
+
+
 
 
 
