@@ -31,7 +31,7 @@ jobs:
 
       - name: Integration test for data loading
         run: |
-          python -m unittest discover -s src/tests
+          python -m unittest discover -s /tests
 
 
       - name: Cache dependencies
