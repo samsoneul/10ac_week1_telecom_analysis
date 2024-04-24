@@ -1,0 +1,43 @@
+name: Build and tests
+
+on:
+  push:
+    branches:
+      - main
+      - Task-2
+  pull_request:
+    branches:
+      - main
+      - Task-2
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+
+      - name: Integration test for data loading
+        run: |
+          python -m unittest discover -s tests
+
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: C:/Users/Ourba/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
