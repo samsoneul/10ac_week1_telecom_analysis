@@ -30,7 +30,7 @@ jobs:
 
 
       - name: Integration test for data loading
-        run: pytest tests\
+        run: python -m pytest tests/
 
 
       - name: Cache dependencies
