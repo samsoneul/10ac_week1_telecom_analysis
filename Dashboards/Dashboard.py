@@ -92,6 +92,50 @@ def plot_engagement_metrics(engagement_metrics):
 
 
 
+    
+
+def analyze_and_plot_top_users_per_application(df):
+    app_cols = ['Social Media', 'Google', 'Email', 'Youtube', 'Netflix', 'Gaming', 'Other']
+
+    # Create new columns for total traffic per application
+    for app in app_cols:
+        df[f'{app} Total Traffic (Bytes)'] = df[f'{app} DL (Bytes)'] + df[f'{app} UL (Bytes)']
+
+    # Aggregate total traffic per application for each user
+    user_traffic = df.groupby('MSISDN/Number')[[f'{app} Total Traffic (Bytes)' for app in app_cols]].sum().reset_index()
+
+    # Initialize an empty dictionary to store the top 10 most engaged users per application
+    top_10_users_per_app = {}
+
+    # Identify the top 10 most engaged users per application
+    for app in app_cols:
+        top_10_users_per_app[app] = user_traffic.nlargest(10, f'{app} Total Traffic (Bytes)')[['MSISDN/Number', f'{app} Total Traffic (Bytes)']]
+
+    # Display the top 10 most engaged users per application
+    for app in app_cols[1:]:  # Start from Email and proceed to Other
+        st.write(f"Top 10 Most Engaged Users for {app}:")
+        st.write(top_10_users_per_app[app].head(10))
+
+    # Calculate the total traffic for each application
+    total_traffic_per_app = {app: df[f'{app} Total Traffic (Bytes)'].sum() for app in app_cols}
+
+    # Sort the applications based on total traffic in descending order
+    sorted_apps = sorted(total_traffic_per_app, key=total_traffic_per_app.get, reverse=True)
+
+    # Select the top 3 most used applications
+    top_3_apps = sorted_apps[:3]
+
+    # Create a bar plot for the top 3 most used applications
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x=top_3_apps, y=[total_traffic_per_app[app] for app in top_3_apps])
+    plt.xlabel('Applications')
+    plt.ylabel('Total Traffic (Bytes)')
+    plt.title('Top 3 Most Used Applications by Total Traffic')
+    st.pyplot(plt.gcf())    
+
+
+
+
 # Load data
 @st.cache_data
 
@@ -118,7 +162,7 @@ def main():
         st.subheader('Top 3 Handset Manufacturers')
         display_top_manufacturers(df)
 
-    if dashboard_option == 'Engagement Analysis':
+    elif dashboard_option == 'Engagement Analysis':
         st.header('Engagement Analysis')
 
         # Perform engagement analysis
@@ -132,13 +176,13 @@ def main():
 
         # Plot engagement metrics
         plot_engagement_metrics(engagement_metrics)
-    
+        analyze_and_plot_top_users_per_application(df)
 
 
         
         
 dashboard_option = st.sidebar.selectbox('Select Dashboard', 
-                                            ['Overview Analysis', 'Engagement Analysis', 'Experience Analysis', 'Satisfaction Analysis'])
+                                            ['Overview Analysis1', 'Engagement Analysis', 'Experience Analysis', 'Satisfaction Analysis'])
         
 
     
